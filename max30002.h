@@ -9,7 +9,7 @@
 
 class MAX30002 {
 public:
-  enum class REG_map_t : uint8_t { // register map
+  typedef enum { // register map
     STATUS = 0x01,
     EN_INT = 0x02,
     EN_INT2 = 0x03,
@@ -24,16 +24,17 @@ public:
     CNFG_BIOZ = 0x18,
     FIFO_BURST = 0x22,
     FIFO = 0x23
-  };
+  } REG_map_t;
 
   /*
    * @brief INFO (0x0F)
    */
-  union max30001_info_reg {
-    uint8_t all;
+  union max30002_info_reg {
+    uint32_t all;
     struct {
-      uint8_t reserved : 4;
-      uint8_t rev_id : 4;
+      uint32_t reserved : 16; // [0:15]
+      uint32_t rev_id : 4;    // [16:19]
+      uint32_t fixed : 12;    // [20:31]
     } bit;
   };
 
@@ -44,7 +45,19 @@ public:
    */
   MAX30002(SPI &spi, DigitalOut &cs);
 
+  /* Public functions */
+  int readRegister(REG_map_t reg, uint32_t *data);
+
 private:
+  /**
+   * @brief Transmit and recieve 32bit SPI data
+   * @param tx_buf transmit buffer
+   * @param tx_size number of bytes to transmit
+   * @param rx_buf recieve buffer
+   * @param rx_size number of bytes to recieve
+   */
+  int sendSPI(uint8_t *tx_buf, uint8_t tx_size, uint8_t *rx_buf,
+              uint8_t rx_size);
   SPI &m_spi;
   DigitalOut &m_cs;
 
