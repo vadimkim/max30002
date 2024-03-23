@@ -26,10 +26,43 @@ public:
     FIFO = 0x23
   } REG_map_t;
 
-  /*
+  /************* Registers *********************/
+  /**
+   * @brief STATUS (0x01)
+   */
+  union status_reg {
+    uint32_t all;
+    struct {
+      uint32_t ldoff_nl : 1;  //[0]
+      uint32_t ldoff_nh : 1;  //[1]
+      uint32_t ldoff_pl : 1;  //[2]
+      uint32_t ldoff_ph : 1;  //[3]
+      uint32_t bcgmn : 1;     //[4]
+      uint32_t bcgmp : 1;     //[5]
+      uint32_t reserved1 : 1; //[6]
+      uint32_t reserved2 : 1; //[7]
+
+      uint32_t pllint : 1;    //[8]
+      uint32_t samp : 1;      //[9]
+      uint32_t reserved3 : 1; //[10]
+      uint32_t lonint : 1;    //[11]
+      uint32_t reserved4 : 3; //[12:14]
+      uint32_t bcgmon : 1;    //[15]
+
+      uint32_t bundr : 1;     //[16]
+      uint32_t bover : 1;     //[17]
+      uint32_t bovf : 1;      //[18]
+      uint32_t bint : 1;      //[19]
+      uint32_t dcloffint : 1; //[20]
+
+      uint32_t reserved5 : 11; //[21:31]
+    } bit;
+  };
+
+  /**
    * @brief INFO (0x0F)
    */
-  union max30002_info_reg {
+  union info_reg {
     uint32_t all;
     struct {
       uint32_t reserved : 16; // [0:15]
@@ -38,7 +71,60 @@ public:
     } bit;
   };
 
-  /*
+  /**
+   * @brief CNFG_GEN (0x10)
+   */
+  union cnfg_gen_reg {
+    uint32_t all;
+    struct {
+      uint32_t rbiasn : 1;   //[0]
+      uint32_t rbiasp : 1;   //[1]
+      uint32_t rbiasv : 2;   //[2:3]
+      uint32_t en_rbias : 2; //[4:5]
+      uint32_t vth : 2;      //[6:7]
+
+      uint32_t imag : 3;      //[8:10]
+      uint32_t ipol : 1;      //[11]
+      uint32_t en_dcloff : 2; //[12:13]
+      uint32_t en_bloff : 2;  //[14:15]
+
+      uint32_t reserved1 : 2;  //[16:17]
+      uint32_t en_bioz : 1;    //[18]
+      uint32_t reserved2 : 1;  //[19]
+      uint32_t fmstr : 2;      //[20:21]
+      uint32_t en_ulp_lon : 2; //[22:23]
+
+      uint32_t reserved3 : 8; //[24:31]
+    } bit;
+  };
+
+  /**
+   * @brief CNFG_BIOZ   (0x18)
+   */
+  union bioz_reg {
+    uint32_t all;
+    struct {
+      uint32_t phoff : 4; //[0:3]
+      uint32_t cgmag : 3; //[4:6]
+      uint32_t cgmon : 1; //[7]
+
+      uint32_t fcgen : 4; //[8:11]
+      uint32_t dlpf : 2;  //[12:13]
+      uint32_t dhpf : 2;  //[14:15]
+
+      uint32_t gain : 2;        //[16:17]
+      uint32_t inapow_mode : 1; //[18]
+      uint32_t ext_rbias : 1;   //[19]
+      uint32_t ahpf : 3;        //[20:22]
+      uint32_t rate : 1;        //[23]
+
+      uint32_t reserved : 8; //[24:31]
+    } bit;
+  };
+
+  /****** End of reegisters definition *********/
+
+  /**
    * @brief MAX30002 constructor
    * @param spi SPI object
    * @param cs PIN for chip select
@@ -47,6 +133,7 @@ public:
 
   /* Public functions */
   int readRegister(REG_map_t reg, uint32_t *data);
+  int writeRegister(REG_map_t reg, uint32_t data);
 
 private:
   /**

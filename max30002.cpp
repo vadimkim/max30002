@@ -7,14 +7,15 @@
 #include "max30002.h"
 #include "mbed.h"
 
+/*******************************************************************/
 MAX30002::MAX30002(SPI &spi, DigitalOut &cs) : m_spi(spi), m_cs(cs) {
   m_cs.write(1); // disable communication by default
 }
-
+/*******************************************************************/
 int MAX30002::readRegister(REG_map_t reg, uint32_t *data) {
   uint8_t result[4];
   uint8_t data_array[1];
-  int32_t success = 0;
+  int8_t success = 0;
 
   data_array[0] = ((reg << 1) & 0xff) | 1; // read operation
   success = sendSPI(data_array, 1, result, 4);
@@ -28,7 +29,28 @@ int MAX30002::readRegister(REG_map_t reg, uint32_t *data) {
     return 0;
   }
 }
+/*******************************************************************/
+int MAX30002::writeRegister(REG_map_t reg, uint32_t data) {
 
+  uint8_t result[4];
+  uint8_t data_array[4];
+  int8_t success = 0;
+
+  data_array[0] = (reg << 1) & 0xff;
+
+  data_array[3] = data & 0xff;
+  data_array[2] = (data >> 8) & 0xff;
+  data_array[1] = (data >> 16) & 0xff;
+
+  success = sendSPI(data_array, 4, result, 4);
+
+  if (success != 0) {
+    return -1;
+  } else {
+    return 0;
+  }
+}
+/*******************************************************************/
 int MAX30002::sendSPI(uint8_t *tx_buf, uint8_t tx_size, uint8_t *rx_buf,
                       uint8_t rx_size) {
 
