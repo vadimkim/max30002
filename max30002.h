@@ -3,9 +3,10 @@
  * Author: vadimkim
  *
  */
+#ifndef _MAX30002_H_
+#define _MAX30002_H_
 
 #include "mbed.h"
-#include <cstdint>
 
 class MAX30002 {
 public:
@@ -149,3 +150,5 @@ private:
   DigitalOut &m_cs;
 
 }; // end of class
+
+#endif //_MAX30002_H_
