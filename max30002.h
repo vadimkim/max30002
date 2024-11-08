@@ -102,7 +102,7 @@ public:
   /**
    * @brief CNFG_BIOZ   (0x18)
    */
-  union bioz_reg {
+  union cnfg_bioz_reg {
     uint32_t all;
     struct {
       uint32_t phoff : 4; //[0:3]
@@ -121,6 +121,19 @@ public:
 
       uint32_t reserved : 8; //[24:31]
     } bit;
+  };
+
+  /**
+  * @brief FIFO (0x22 and 0x23 register)
+  */
+  union fifo {
+      uint32_t all;
+      struct {
+          uint32_t btag : 3;  // [0:2]
+          uint32_t zero : 1;  // [3] always 0
+          uint32_t data : 20; // [4-23]
+          uint32_t reserved : 8; //[24:31]
+      } bit;
   };
 
   /****** End of reegisters definition *********/
