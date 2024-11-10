@@ -131,7 +131,7 @@ public:
       struct {
           uint32_t btag : 3;  // [0:2]
           uint32_t zero : 1;  // [3] always 0
-          uint32_t data : 20; // [4-23]
+          uint32_t voltage : 20; // [4-23]
           uint32_t reserved : 8; //[24:31]
       } bit;
   };
